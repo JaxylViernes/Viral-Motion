@@ -13,6 +13,7 @@ import { LoadingOverlay } from '../../ui/modals/LoadingProjectModal';
 import { useProjectSave } from '../../../hooks/SaveProject';
 import { useParams } from 'react-router-dom';
 import { backendPrefix } from '../../../config';
+import type { HeatmapConfig } from '../../remotion_compositions/HeatMap';
 
 
 // --- CONFIGURATION INTERFACES ---
@@ -23,18 +24,6 @@ export interface LanguageData {
   logo: string;
 }
 
-export interface HeatmapConfig {
-  id: string;
-  title: string;
-  subtitle: string;
-  textColor: string; 
-  languages: LanguageData[];
-  primaryColor: string;
-  secondaryColor: string;
-  accentColor: string;
-  maxValue: number;
-  backgroundStyle: 'gradient' | 'radial';
-}
 
 const defaultHeatmapConfig: HeatmapConfig = {
   id: 'default-heatmap-v1',
@@ -77,10 +66,11 @@ export const HeatmapEditor: React.FC = () => {
 
   const [templateName, setTemplateName] = useState('📊 Heatmap Template');
   
-  const [config, setConfig] = useState(() => {
-    const { languages, ...baseConfig } = defaultHeatmapConfig;
-    return { ...baseConfig, languages: [] }; 
-  });
+  const [config, setConfig] = useState<HeatmapConfig>(() => ({
+  ...defaultHeatmapConfig,
+  languages: [],
+}));
+
   
   const [userLanguages, setUserLanguages] = useState<LanguageData[] | null>(null);
 
@@ -211,6 +201,15 @@ export const HeatmapEditor: React.FC = () => {
       backgroundStyle: style.backgroundStyle,
     }));
   };
+
+  useEffect(() => {
+      if (!isLoading) return;
+      const interval = setInterval(
+        () => setMessageIndex((prev) => (prev + 1) % messages.length),
+        10000
+      );
+      return () => clearInterval(interval);
+    }, [isLoading]);
 
   const handleExport = async (format: string) => {
     setIsExporting(true);

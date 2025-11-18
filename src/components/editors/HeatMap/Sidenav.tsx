@@ -61,7 +61,7 @@ export const HeatmapTemplateSideNav: React.FC<SidenavProps> = ({
       {heatmapnavs.map(({ key, label, icon }) => (
         <button
           key={key}
-          onClick={() => setActiveSection(key)}
+          onClick={() => setActiveSection(key as any)}
           style={{
             padding: '1rem',
             textAlign: 'left',

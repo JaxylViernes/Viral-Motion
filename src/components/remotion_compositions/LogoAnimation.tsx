@@ -136,7 +136,6 @@ export const LogoLiquidOverlay: React.FC<LogoLiquidOverlayProps> = ({
   text,
   durationOutline,
   durationFill,
-  durationEndPause, // 💡 Used here for composition calculation, though not in the visual logic itself.
   baseColor,
 }) => {
   const frame = useCurrentFrame();
@@ -144,7 +143,7 @@ export const LogoLiquidOverlay: React.FC<LogoLiquidOverlayProps> = ({
 
   const outlineFrames = durationOutline * fps;
   const fillFrames = durationFill * fps;
-  const totalFrames = outlineFrames + fillFrames + durationEndPause * fps; // 💡 Updated total frames
+  // const totalFrames = outlineFrames + fillFrames + durationEndPause * fps; // 💡 Updated total frames
 
   // All existing interpolations rely on frame counts derived from outlineFrames and fillFrames, 
   // so they automatically complete before the end pause frames are reached.
@@ -169,7 +168,7 @@ export const LogoLiquidOverlay: React.FC<LogoLiquidOverlayProps> = ({
   // ✅ Accept any CSS color string coming from zColor()
   const base = cssToRgb(baseColor);
   const lighter = mix(base, { r: 255, g: 255, b: 255 }, 0.25);
-  const darker = mix(base, { r: 0, g: 0, b: 0 }, 0.35);
+  // const darker = mix(base, { r: 0, g: 0, b: 0 }, 0.35);
   const lighterAnimated = mix(base, { r: 255, g: 255, b: 255 }, 0.15 + fillProgress * 0.25);
   const darkerAnimated = mix(base, { r: 0, g: 0, b: 0 }, 0.2 + fillProgress * 0.2);
 

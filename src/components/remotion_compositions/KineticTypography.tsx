@@ -36,33 +36,6 @@ const hexToRgba = (hex: string, alpha: number = 1): string => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
-// Utility function to extract HSL values for background gradient
-const hexToHsl = (hex: string): string => {
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
-
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  let h, s, l = (max + min) / 2;
-
-  if (max === min) {
-    h = s = 0;
-  } else {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
-      default: h = 0;
-    }
-    h /= 6;
-  }
-
-  return `${Math.round(h * 360)}deg ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
-};
-
 export const KineticTypographyIntro: React.FC<KineticTypographyIntroProps> = ({ config }) => {
   const frame = useCurrentFrame();
   
@@ -95,7 +68,7 @@ export const KineticTypographyIntro: React.FC<KineticTypographyIntroProps> = ({ 
   };
   
   // Dynamic background gradient using primary color
-  const primaryHsl = hexToHsl(colors.primary);
+  // const primaryHsl = hexToHsl(colors.primary);
   const bgRotation = interpolate(frame, [0, totalDuration], [0, 360], {
     extrapolateRight: 'clamp'
   });
@@ -106,16 +79,12 @@ export const KineticTypographyIntro: React.FC<KineticTypographyIntroProps> = ({ 
     extrapolateRight: 'clamp'
   });
   
-  // Energy ball formation and explosion
-  const ballFormation = interpolate(frame, [collisionFrame - 10, collisionFrame + 5], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp'
-  });
   
-  const ballExplosion = spring({
-    frame: frame - explosionFrame,
-    ...explosionSpringConfig
-  });
+  
+  // const ballExplosion = spring({
+  //   frame: frame - explosionFrame,
+  //   ...explosionSpringConfig
+  // });
   
   // Ball energy effects
   const ballPulse = Math.sin(frame * 0.5) * 0.3 + 0.7;

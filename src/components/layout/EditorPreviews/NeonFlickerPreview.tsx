@@ -2,8 +2,8 @@ import React from 'react';
 import { Player } from '@remotion/player';
 import {
   NeonFlickerTitle,
- type NeonConfig,
 } from '../../remotion_compositions/NeonFlickerTitle'; // Adjust path
+import type { NeonConfig } from '../../remotion_compositions/neonConfig';
 
 // --- Wrapper for Neon Player ---
 const NeonCompositionComponent: React.FC<{

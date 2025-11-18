@@ -17,30 +17,8 @@ import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
 import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
 import { backendPrefix } from "../../../config"; // Assuming this path is correct
-// --- END ADDED IMPORTS ---
+import type { KineticTiming, TypographyConfig, KineticColors, KineticEffects  } from "../../../models/KineticText";
 
-// Define the config interface matching Composition.tsx
-interface TypographyConfig {
-  id: string;
-  words: string[];
-  colors: {
-    primary: string;
-    secondary: string;
-    accent: string;
-  };
-  timing: {
-    staggerDelay: number;
-    collisionFrame: number;
-    explosionDelay: number;
-  };
-  effects: {
-    shakeIntensity: number;
-    particleCount: number;
-    ballSize: number;
-  };
-}
-
-// Define a default configuration
 const defaultConfig: TypographyConfig = {
   id: "default-kinetic-v1",
   words: ["KINETIC", "TYPOGRAPHY"],
@@ -65,9 +43,26 @@ export const KineticEditor: React.FC = () => {
   const { id } = useParams(); // ADDED
 
   // 🟢 Core States (ADDED)
-  const [templateName, setTemplateName] = useState(
-    "💥 Kinetic Text Template"
-  );
+
+  // setState configurations
+
+  const [words, setWords] = useState(["KINETIC", "TYPOGRAPHY"]);
+  const [colors, setColors] = useState<KineticColors>({
+    primary: "#00f2ff",
+    secondary: "#ff4fa3",
+    accent: "#ffffff",
+  });
+  const [timing, setTiming] = useState<KineticTiming>({
+    staggerDelay: 5,
+    collisionFrame: 45,
+    explosionDelay: 20,
+  });
+  const [effects, setEffects] = useState<KineticEffects>({
+    shakeIntensity: 12,
+    particleCount: 70,
+    ballSize: 120,
+  })
+  const [templateName, setTemplateName] = useState("💥 Kinetic Text Template");
   // Main state for the Remotion component
   const [config, setConfig] = useState(defaultConfig);
 
@@ -171,15 +166,12 @@ export const KineticEditor: React.FC = () => {
     else setPreviewBg("dark");
   };
 
-  // Helper functions to update nested config state
-  const setWords = (words: string[]) =>
-    setConfig((prev) => ({ ...prev, words }));
-  const setColors = (colors: TypographyConfig["colors"]) =>
-    setConfig((prev) => ({ ...prev, colors }));
-  const setTiming = (timing: TypographyConfig["timing"]) =>
-    setConfig((prev) => ({ ...prev, timing }));
-  const setEffects = (effects: TypographyConfig["effects"]) =>
-    setConfig((prev) => ({ ...prev, effects }));
+  // const setColors = (colors: TypographyConfig["colors"]) =>
+  //   setConfig((prev) => ({ ...prev, colors }));
+  // const setTiming = (timing: TypographyConfig["timing"]) =>
+  //   setConfig((prev) => ({ ...prev, timing }));
+  // const setEffects = (effects: TypographyConfig["effects"]) =>
+  //   setConfig((prev) => ({ ...prev, effects }));
 
   const handleExport = async (format: string) => {
     setIsExporting(true);
@@ -287,29 +279,26 @@ export const KineticEditor: React.FC = () => {
             {/* <h2 ... > 💥 Kinetic Text Template </h2> */}
 
             {activeSection === "text" && (
-              <KineticTextSection
-                words={config.words}
-                setWords={setWords}
-              />
+              <KineticTextSection words={words} setWords={setWords} />
             )}
 
             {activeSection === "colors" && (
               <KineticColorSection
-                colors={config.colors}
+                colors={colors}
                 setColors={setColors}
               />
             )}
 
             {activeSection === "timing" && (
               <KineticTimingSection
-                timing={config.timing}
+                timing={timing}
                 setTiming={setTiming}
               />
             )}
 
             {activeSection === "effects" && (
               <KineticEffectsSection
-                effects={config.effects}
+                effects={effects}
                 setEffects={setEffects}
               />
             )}

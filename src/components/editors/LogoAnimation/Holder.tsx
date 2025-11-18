@@ -20,6 +20,7 @@ const defaultConfig: LogoLiquidOverlayProps = {
   durationOutline: 2,
   durationFill: 2.5,
   baseColor: "#FFD700",
+  durationEndPause: 2
 };
 
 // Define the type for the active section

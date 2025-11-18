@@ -1,18 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { FlipCardsTemplateSideNav } from './Sidenav';
-import { FlipCardsTextSection } from './sidenav_sections/TextSection';
-import { FlipCardsDataSection, type MetricDataUI } from './sidenav_sections/DataSection';
-import { FlipCardsStyleSection } from './sidenav_sections/StyleSection';
-import { FlipCardsPreview } from '../../layout/EditorPreviews/FlipCardsPreview';
-import { defaultpanelwidth } from '../../../data/DefaultValues';
+import React, { useState, useRef, useEffect } from "react";
+import { FlipCardsTemplateSideNav } from "./Sidenav";
+import { FlipCardsTextSection } from "./sidenav_sections/TextSection";
+import {
+  FlipCardsDataSection,
+  type MetricDataUI,
+} from "./sidenav_sections/DataSection";
+import { FlipCardsStyleSection } from "./sidenav_sections/StyleSection";
+import { FlipCardsPreview } from "../../layout/EditorPreviews/FlipCardsPreview";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
 
-import { ExportModal } from '../../ui/modals/ExportModal';
-import { TopNavWithSave } from '../../navigations/single_editors/WithSave';
-import { SaveProjectModal } from '../../ui/modals/SaveModal';
-import { LoadingOverlay } from '../../ui/modals/LoadingProjectModal';
-import { useProjectSave } from '../../../hooks/SaveProject';
-import { useParams } from 'react-router-dom';
-import { backendPrefix } from '../../../config';
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
+import { useProjectSave } from "../../../hooks/SaveProject";
+import { useParams } from "react-router-dom";
+import { backendPrefix } from "../../../config";
 
 export interface MetricDataRemotion {
   front: string;
@@ -32,13 +35,13 @@ export interface FlipCardsConfig {
 }
 
 const defaultFlipCardsConfig: FlipCardsConfig = {
-  id: 'default-flipcards-v1',
-  title: 'Project Key Metrics',
-  subtitle: 'This Quarter vs. Last Quarter',
+  id: "default-flipcards-v1",
+  title: "Project Key Metrics",
+  subtitle: "This Quarter vs. Last Quarter",
   metrics: [
-    { front: '1,204\nNew Users', back: '+15.2%\nvs. Q2', color: '#3b82f6' },
-    { front: '72.5%\nConversion', back: '-0.8%\nvs. Q2', color: '#10b981' },
-    { front: '$42,800\nRevenue', back: '+22.0%\nvs. Q2', color: '#f59e0b' },
+    { front: "1,204\nNew Users", back: "+15.2%\nvs. Q2", color: "#3b82f6" },
+    { front: "72.5%\nConversion", back: "-0.8%\nvs. Q2", color: "#10b981" },
+    { front: "$42,800\nRevenue", back: "+22.0%\nvs. Q2", color: "#f59e0b" },
   ],
   flipDuration: 0.8,
   spacing: 20,
@@ -54,8 +57,8 @@ const useIsMobile = (breakpoint = 768) => {
       setIsMobile(window.innerWidth < breakpoint);
     };
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [breakpoint]);
 
   return isMobile;
@@ -64,9 +67,9 @@ const useIsMobile = (breakpoint = 768) => {
 export const FlipCardsEditor: React.FC = () => {
   const { id } = useParams();
 
-  const [templateName, setTemplateName] = useState('📊 Flip Cards Template');
-  
-  const [config, setConfig] = useState<Omit<FlipCardsConfig, 'id'>>(() => {
+  const [templateName, setTemplateName] = useState("📊 Flip Cards Template");
+
+  const [config, setConfig] = useState<Omit<FlipCardsConfig, "id">>(() => {
     const { id, ...baseConfig } = defaultFlipCardsConfig;
     return { ...baseConfig, metrics: [] };
   });
@@ -75,17 +78,19 @@ export const FlipCardsEditor: React.FC = () => {
 
   const [previewSize, setPreviewSize] = useState(0.8);
   const [showSafeMargins, setShowSafeMargins] = useState(true);
-  const [previewBg, setPreviewBg] = useState<'dark' | 'light' | 'grey'>('dark');
-  const [activeSection, setActiveSection] = useState<'text' | 'data' | 'style'>('text');
+  const [previewBg, setPreviewBg] = useState<"dark" | "light" | "grey">("dark");
+  const [activeSection, setActiveSection] = useState<"text" | "data" | "style">(
+    "text"
+  );
   const [collapsed, setCollapsed] = useState(false);
   const isMobile = useIsMobile();
 
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [messageIndex, setMessageIndex] = useState(0);
-  const messages = ['竢ｳ Preparing your template...'];
+  const messages = ["竢ｳ Preparing your template..."];
 
   const [panelWidth, setPanelWidth] = useState(defaultpanelwidth);
   const [isResizing, setIsResizing] = useState(false);
@@ -95,20 +100,21 @@ export const FlipCardsEditor: React.FC = () => {
     if (isMobile || !isResizing) return;
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing) return;
-      const newWidth = e.clientX - (panelRef.current?.getBoundingClientRect().left || 0);
+      const newWidth =
+        e.clientX - (panelRef.current?.getBoundingClientRect().left || 0);
       if (newWidth > 250 && newWidth < 600) {
         setPanelWidth(newWidth);
       }
     };
     const handleMouseUp = () => setIsResizing(false);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isResizing, isMobile]);
-  
+
   const {
     setProjectId,
     isSaving,
@@ -129,19 +135,29 @@ export const FlipCardsEditor: React.FC = () => {
     videoEndpoint: `${backendPrefix}/generatevideo/flipcardsrender`,
   });
 
-  const convertUiMetricsToRemotion = (uiMetrics: MetricDataUI[]): MetricDataRemotion[] => {
-    return uiMetrics.map(item => ({
+  const convertUiMetricsToRemotion = (
+    uiMetrics: MetricDataUI[]
+  ): MetricDataRemotion[] => {
+    return uiMetrics.map((item) => ({
       front: `${item.frontNumber}\n${item.frontLabel}`,
       back: `${item.backNumber}\n${item.backLabel}`,
       color: item.color,
     }));
   };
 
-  const convertRemotionMetricsToUi = (remotionMetrics: MetricDataRemotion[]): MetricDataUI[] => {
-    return remotionMetrics.map(item => {
-      const [frontNumber = '', frontLabel = ''] = item.front.split('\n');
-      const [backNumber = '', backLabel = ''] = item.back.split('\n');
-      return { frontNumber, frontLabel, backNumber, backLabel, color: item.color };
+  const convertRemotionMetricsToUi = (
+    remotionMetrics: MetricDataRemotion[]
+  ): MetricDataUI[] => {
+    return remotionMetrics.map((item) => {
+      const [frontNumber = "", frontLabel = ""] = item.front.split("\n");
+      const [backNumber = "", backLabel = ""] = item.back.split("\n");
+      return {
+        frontNumber,
+        frontLabel,
+        backNumber,
+        backLabel,
+        color: item.color,
+      };
     });
   };
 
@@ -158,27 +174,26 @@ export const FlipCardsEditor: React.FC = () => {
         .then((data) => {
           setTemplateName(data.title);
           setProjectId(data.id);
-          setConfig(data.props); 
+          setConfig(data.props);
           setUserMetrics(convertRemotionMetricsToUi(data.props.metrics));
           lastSavedProps.current = data.props;
         })
         .catch((err) => console.error("❌ Project load failed:", err))
         .finally(() => setIsLoading(false));
     } else {
-      setUserMetrics(convertRemotionMetricsToUi(defaultFlipCardsConfig.metrics));
+      setUserMetrics(
+        convertRemotionMetricsToUi(defaultFlipCardsConfig.metrics)
+      );
     }
-  }, [id, setProjectId, lastSavedProps]); 
+  }, [id, setProjectId, lastSavedProps]);
 
   const cycleBg = () => {
-    if (previewBg === 'dark') setPreviewBg('light');
-    else if (previewBg === 'light') setPreviewBg('grey');
-    else setPreviewBg('dark');
+    if (previewBg === "dark") setPreviewBg("light");
+    else if (previewBg === "light") setPreviewBg("grey");
+    else setPreviewBg("dark");
   };
-  
-  const setTextConfig = (props: {
-    title: string;
-    subtitle: string;
-  }) => {
+
+  const setTextConfig = (props: { title: string; subtitle: string }) => {
     setConfig((prev) => ({ ...prev, ...props }));
   };
 
@@ -197,7 +212,7 @@ export const FlipCardsEditor: React.FC = () => {
 
   const handleExport = async (format: string) => {
     setIsExporting(true);
-    setExportUrl(null); 
+    setExportUrl(null);
     try {
       const metricsForExport =
         userMetrics === null
@@ -209,14 +224,17 @@ export const FlipCardsEditor: React.FC = () => {
         metrics: metricsForExport,
       };
 
-      const response = await fetch(`${backendPrefix}/generatevideo/flipcardsrender`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          config: configToExport, 
-          format: format,
-        }),
-      });
+      const response = await fetch(
+        `${backendPrefix}/generatevideo/flipcardsrender`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            config: configToExport,
+            format: format,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -235,7 +253,7 @@ export const FlipCardsEditor: React.FC = () => {
       setIsExporting(false);
     }
   };
-  
+
   const isPanelVisible = isMobile ? true : !collapsed;
 
   const metricsForPreview =
@@ -249,18 +267,27 @@ export const FlipCardsEditor: React.FC = () => {
     cardWidth: config.cardWidth > 0 ? config.cardWidth : undefined,
   };
 
+  useEffect(() => {
+    if (!isLoading) return;
+    const interval = setInterval(
+      () => setMessageIndex((prev) => (prev + 1) % messages.length),
+      10000
+    );
+    return () => clearInterval(interval);
+  }, [isLoading]);
+
   return (
-    <div style={{ display: 'flex', height: '100%', flex: 1 }}>
+    <div style={{ display: "flex", height: "100%", flex: 1 }}>
       {isLoading && <LoadingOverlay message={messages[messageIndex]} />}
 
       <TopNavWithSave
         templateName={templateName}
         onSave={handleSave}
-        onExport={() => {}} 
+        onExport={() => {}}
         setTemplateName={setTemplateName}
-        onOpenExport={() => setShowModal(true)} 
+        onOpenExport={() => setShowModal(true)}
         template={templateName}
-        isSaving={isSaving} 
+        isSaving={isSaving}
       />
 
       <SaveProjectModal
@@ -274,28 +301,27 @@ export const FlipCardsEditor: React.FC = () => {
           setShowExport={setShowModal}
           isExporting={isExporting}
           exportUrl={exportUrl}
-          onExport={handleExport} 
+          onExport={handleExport}
         />
       )}
 
-      <div 
-        style={{ 
-          display: 'flex', 
-          flex: 1, 
-          marginTop: '60px',
-          flexDirection: isMobile ? 'column' : 'row',
-          height: 'calc(100vh - 60px)', 
+      <div
+        style={{
+          display: "flex",
+          flex: 1,
+          marginTop: "60px",
+          flexDirection: isMobile ? "column" : "row",
+          height: "calc(100vh - 60px)",
         }}
       >
-        
-        <div 
+        <div
           style={{
-            display: 'flex',
-            flexDirection: 'row',
-            flex: isMobile ? '1' : '0 0 auto',
-            width: isMobile ? '100%' : 'auto',
-            height: isMobile ? 'auto' : '100%',
-            overflow: 'hidden', 
+            display: "flex",
+            flexDirection: "row",
+            flex: isMobile ? "1" : "0 0 auto",
+            width: isMobile ? "100%" : "auto",
+            height: isMobile ? "auto" : "100%",
+            overflow: "hidden",
           }}
         >
           <FlipCardsTemplateSideNav
@@ -310,52 +336,52 @@ export const FlipCardsEditor: React.FC = () => {
             <div
               ref={panelRef}
               style={{
-                width: isMobile ? 'auto' : `${panelWidth}px`,
-                flex: isMobile ? 1 : '0 0 auto', 
-                padding: isMobile ? '1rem' : '2rem',
-                overflowY: 'auto',
-                background: '#fff',
-                borderRight: isMobile ? 'none' : '1px solid #eee',
-                borderTop: isMobile ? '1px solid #eee' : 'none',
-                position: 'relative',
-                transition: isResizing ? 'none' : 'width 0.2s',
+                width: isMobile ? "auto" : `${panelWidth}px`,
+                flex: isMobile ? 1 : "0 0 auto",
+                padding: isMobile ? "1rem" : "2rem",
+                overflowY: "auto",
+                background: "#fff",
+                borderRight: isMobile ? "none" : "1px solid #eee",
+                borderTop: isMobile ? "1px solid #eee" : "none",
+                position: "relative",
+                transition: isResizing ? "none" : "width 0.2s",
               }}
             >
               {!isMobile && (
-                 <div
+                <div
                   onMouseDown={() => setIsResizing(true)}
                   style={{
-                    position: 'absolute',
+                    position: "absolute",
                     right: 0,
                     top: 0,
                     bottom: 0,
-                    width: '6px',
-                    cursor: 'col-resize',
-                    background: '#ddd',
+                    width: "6px",
+                    cursor: "col-resize",
+                    background: "#ddd",
                     opacity: 0.5,
-                    transition: 'opacity 0.2s',
+                    transition: "opacity 0.2s",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.5')}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.5")}
                 />
               )}
 
-              {activeSection === 'text' && (
+              {activeSection === "text" && (
                 <FlipCardsTextSection
                   title={config.title}
                   subtitle={config.subtitle}
-                  setText={setTextConfig} 
+                  setText={setTextConfig}
                 />
               )}
 
-              {activeSection === 'data' && (
+              {activeSection === "data" && (
                 <FlipCardsDataSection
                   metrics={userMetrics || []}
                   setMetrics={setMetrics}
                 />
               )}
 
-              {activeSection === 'style' && (
+              {activeSection === "style" && (
                 <FlipCardsStyleSection
                   style={{
                     flipDuration: config.flipDuration,
@@ -368,7 +394,7 @@ export const FlipCardsEditor: React.FC = () => {
               )}
             </div>
           )}
-        </div> 
+        </div>
 
         <FlipCardsPreview
           config={previewConfig}
