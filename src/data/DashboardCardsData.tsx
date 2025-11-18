@@ -22,19 +22,19 @@ export const templateCategories = {
     {
       name: "Kinetic Typography",
       description: "Create a dynamic, high-energy text explosion intro.",
-      url: "../../KineticTypography - 1.mp4",
+      url: "https://res.cloudinary.com/dcu9xuof0/video/upload/v1763441944/KineticTypography_-_1_bxwbbr.mp4",
     },
 
     {
       name: "Neon Flicker",
       description: "A dynamic 'Neon Flicker' template for a fast-paced text intro.",
-      url: "../../NeonFlickerTitle.mp4",
+      url: "https://res.cloudinary.com/dcu9xuof0/video/upload/v1763441835/NeonFlickerTitle_hybeaz.mp4",
     },
 
     {
       name: "Logo Animation",
       description: "Reveal your brand with a dynamic logo animation featuring a self-drawing outline and a glowing, liquid-fill effect.",
-      url: "../../LogoAnimation.mp4",
+      url: "https://res.cloudinary.com/dcu9xuof0/video/upload/v1763441876/LogoAnimation_qyspkm.mp4",
     },
   ],
   Analytics: [
@@ -56,12 +56,12 @@ export const templateCategories = {
     {  
       name: "Heat Map",
       description: "Animate your data into a sleek, colorful heatmap.",
-      url: "../../HeatMap.mp4",
+      url: "https://res.cloudinary.com/dcu9xuof0/video/upload/v1763441890/HeatMap_cbriqm.mp4",
     },
     {
       name: "Flip Cards",
       description: "Flipping card animations.",
-      url: "../../CardFlip.mp4",
+      url: "https://res.cloudinary.com/dcu9xuof0/video/upload/v1763441913/CardFlip_no4k2t.mp4",
     },
   ],
   Layout: [
@@ -124,15 +124,15 @@ export function templateUrlFinder (template: string){
       case "Typing Animation":
         return "https://res.cloudinary.com/dnxc1lw18/video/upload/v1760794242/TypingAnimation_jlvcyk.mp4";
       case "Kinetic Typography":
-        return "../../KineticTypography - 1.mp4";
+        return "https://res.cloudinary.com/dcu9xuof0/video/upload/v1763441944/KineticTypography_-_1_bxwbbr.mp4";
       case "Neon Flicker":
-        return "../../NeonFlickerTitle.mp4";
+        return "https://res.cloudinary.com/dcu9xuof0/video/upload/v1763441835/NeonFlickerTitle_hybeaz.mp4";
       case "Heat Map":
-        return "../../HeatMap.mp4";
+        return "https://res.cloudinary.com/dcu9xuof0/video/upload/v1763441890/HeatMap_cbriqm.mp4";
       case "Flip Cards":
-        return "../../CardFlip.mp4";
+        return "https://res.cloudinary.com/dcu9xuof0/video/upload/v1763441913/CardFlip_no4k2t.mp4";
       case "Logo Animation":
-        return "../../LogoAnimation.mp4"
+        return "https://res.cloudinary.com/dcu9xuof0/video/upload/v1763441876/LogoAnimation_qyspkm.mp4"
     default:
       return "https://res.cloudinary.com/dnxc1lw18/video/upload/v1760794242/QuoteSpotlight_jn0iya.mp4";
   }
