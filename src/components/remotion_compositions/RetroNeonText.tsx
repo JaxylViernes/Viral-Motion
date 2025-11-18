@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { useCurrentFrame, useVideoConfig, interpolate, Easing } from 'remotion';
 
 // Enhanced color schemes
@@ -329,7 +329,7 @@ export const DynamicTextTemplate = ({
     const stabilizeFrame = delay + flickerDuration;
     
     let filter = '';
-    let background = '';
+    // let background = '';
     let color = colors.primary;
     
     // Style-specific filters and effects

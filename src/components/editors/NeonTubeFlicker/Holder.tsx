@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { backendPrefix } from '../../../config';
 import { useProjectSave } from '../../../hooks/SaveProject';
@@ -371,6 +371,7 @@ export const NeonTubeFlickerEditor: React.FC = () => {
           compositionWidth={previewWidth}
           compositionHeight={previewHeight}
           showSafeMargins={showSafeMargins}
+          onToggleSafeMargins={setShowSafeMargins}
         />
       </div>
     </div>

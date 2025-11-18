@@ -46,6 +46,7 @@ interface PreviewProps {
   isMobile: boolean; 
   compositionWidth: number; // 1080
   compositionHeight: number; // 1920
+  onToggleSafeMargins: (value: boolean) => void;
 }
 
 export const NeonTubeFlickerPreview: React.FC<PreviewProps> = ({
@@ -56,6 +57,7 @@ export const NeonTubeFlickerPreview: React.FC<PreviewProps> = ({
   isMobile,
   compositionWidth,
   compositionHeight,
+  onToggleSafeMargins
 }) => {
   
   // Use a fixed dark background for this preview since the background is part of the composition
@@ -104,7 +106,7 @@ export const NeonTubeFlickerPreview: React.FC<PreviewProps> = ({
           type="checkbox"
           checked={showSafeMargins}
           // Placeholder for the handler that doesn't exist in props (or could be passed through)
-          onChange={() => console.log('Toggle safe margins')} 
+          onChange={(e) => onToggleSafeMargins(e.target.checked)} 
         />
         Show margins
       </label>

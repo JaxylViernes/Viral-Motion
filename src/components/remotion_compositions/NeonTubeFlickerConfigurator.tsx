@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import  {useMemo, useState} from "react";
 import {Player} from "@remotion/player";
 // Assumes your NeonTubeFlicker component is exported from this path.
 // If it's in a different file, update the import accordingly.

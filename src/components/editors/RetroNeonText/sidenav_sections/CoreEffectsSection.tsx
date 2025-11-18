@@ -61,7 +61,7 @@ export const CoreEffectsSection: React.FC<CoreEffectsProps> = ({
           type="checkbox"
           checked={audioReactive}
           onChange={(e) => onChange('audioReactive', e.target.checked)}
-          disabled={!effects && !['audioReactive'].includes(audioReactive)} 
+          disabled={!effects} 
         />
         <span style={labelStyle}>Simulate Audio Reactivity</span>
       </label>
