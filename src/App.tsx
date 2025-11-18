@@ -198,8 +198,14 @@ function App() {
             </RequireAuth>
           }
         />
-
-
+        <Route
+          path="/template/kpiflipcards"
+          element={
+            <RequireAuth>
+              <KpiFlipCardEditor />
+            </RequireAuth>
+          }
+        />
 
         <Route
           path="/template/kpiflipcards/mode/batchrendering"
