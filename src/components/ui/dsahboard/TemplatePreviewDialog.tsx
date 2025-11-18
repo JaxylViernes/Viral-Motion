@@ -137,6 +137,7 @@ export const TemplatePreviewDialog: React.FC<TemplatePreviewDialogProps> = ({
               <Button
                 variant="contained"
                 onClick={() => {
+                  console.log(selectedTemplate);
                   const location = TemplateNavigator(selectedTemplate || "user");
                   window.open(location);
                   onClose();

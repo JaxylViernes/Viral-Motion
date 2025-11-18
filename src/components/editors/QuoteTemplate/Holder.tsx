@@ -5,9 +5,7 @@ import { BackgroundSecTrial } from "../Global/sidenav_sections/Backgrounds";
 import { QuoteSpotlightPreview } from "../../layout/EditorPreviews/QuoteTemplatePreview";
 import { TypographySectionQuote } from "./sidenav_sections/Typo";
 import { defaultpanelwidth } from "../../../data/DefaultValues";
-import {
-  quoteSpotlightDurationCalculator,
-} from "../../../utils/QuoteSpotlightHelpers";
+import { quoteSpotlightDurationCalculator } from "../../../utils/QuoteSpotlightHelpers";
 import { ExportModal } from "../../ui/modals/ExportModal";
 // import { TopNavWithoutBatchrendering } from "../../navigations/single_editors/withoutswitchmodesbutton";
 import { useProjectSave } from "../../../hooks/SaveProject";
@@ -19,6 +17,7 @@ import { useFileUpload } from "../../../hooks/uploads/HandleImageUpload";
 import { useBackgroundImages } from "../../../hooks/datafetching/UserImagesAndOnlineImages";
 import toast from "react-hot-toast";
 import { backendPrefix } from "../../../config";
+import { renderVideo } from "../../../utils/VideoRenderer";
 
 export const QuoteTemplateEditor: React.FC = () => {
   const { id } = useParams();
@@ -64,21 +63,21 @@ export const QuoteTemplateEditor: React.FC = () => {
   const [duration, setDuration] = useState(9);
   const [isLoading, setIsLoading] = useState(false);
 
- const {
-     userUploads,
-     loadingUploads,
-     fetchUserUploads,
-     onlineImages,
-     loadingOnline,
-     fetchOnlineImages,
-     searchQuery,
-     setSearchQuery,
-   } = useBackgroundImages();
- 
-   useEffect(() => {
-     fetchUserUploads();
-     fetchOnlineImages("gradient");
-   }, []);
+  const {
+    userUploads,
+    loadingUploads,
+    fetchUserUploads,
+    onlineImages,
+    loadingOnline,
+    fetchOnlineImages,
+    searchQuery,
+    setSearchQuery,
+  } = useBackgroundImages();
+
+  useEffect(() => {
+    fetchUserUploads();
+    fetchOnlineImages("gradient");
+  }, []);
   // 🔹 Drag handlers
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -104,7 +103,6 @@ export const QuoteTemplateEditor: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-  
       setIsLoading(true);
       fetch(`${backendPrefix}/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -181,64 +179,88 @@ export const QuoteTemplateEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
 
-    try {
-      let finalImageUrl = backgroundImage;
-      const response = await fetch(`${backendPrefix}/generatevideo/quotetemplatewchoices`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          quote,
-          author,
-          imageurl: finalImageUrl,
-          fontsize: fontSize,
-          fontcolor: fontColor,
-          fontfamily: fontFamily,
-          format: format,
-        }),
-      });
+    const props = {
+      quote,
+      author,
+      fontColor,
+      fontSize,
+      fontFamily,
+      backgroundImage,
+    };
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorText}`
-        );
-      }
+    const exportResponse = await renderVideo(props, 1, "QuoteComposition", format);
 
-      const data = await response.json();
-      const renderUrl = data.url;
-      if (renderUrl) {
-        const saveResponse = await fetch(`${backendPrefix}/renders`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({
-            templateId: 1,
-            outputUrl: renderUrl,
-            type: format,
-          }),
-        });
-
-        if (!saveResponse.ok) {
-          throw new Error(
-            `Failed to save upload: ${
-              saveResponse.status
-            } ${await saveResponse.text()}`
-          );
-        }
-
-        const saveData = await saveResponse.json();
-        console.log("✅ Render saved to DB:", saveData);
-      }
-      setExportUrl(data.url);
-      setShowModal(true);
-    } catch (error) {
-      console.error("Export failed:", error);
-      alert(`Export failed: ${error || "Please try again."}`);
-    } finally {
-      setIsExporting(false);
+    if(exportResponse === "error"){
+      toast.error("There was an error exporting your video")
+    }else{
+      setExportUrl(exportResponse);
     }
+    setShowModal(true);
+    setIsExporting(false);
+
+    // try {
+    //   const response = await fetch(
+    //     `${backendPrefix}/generatevideo/render-video`,
+    //     {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({
+    //         props: {
+    //           quote,
+    //           author,
+    //           fontColor,
+    //           fontSize,
+    //           fontFamily,
+    //           backgroundImage,
+    //         },
+    //         compositionId: "QuoteComposition",
+    //         format: format,
+    //       }),
+    //     }
+    //   );
+
+    //   if (!response.ok) {
+    //     const errorText = await response.text();
+    //     throw new Error(
+    //       `HTTP error! status: ${response.status}, message: ${errorText}`
+    //     );
+    //   }
+
+    //   const data = await response.json();
+    //   const renderUrl = data.url;
+    //   if (renderUrl) {
+    //     const saveResponse = await fetch(`${backendPrefix}/renders`, {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //       },
+    //       body: JSON.stringify({
+    //         templateId: 1,
+    //         outputUrl: renderUrl,
+    //         type: format,
+    //       }),
+    //     });
+
+    //     if (!saveResponse.ok) {
+    //       throw new Error(
+    //         `Failed to save upload: ${
+    //           saveResponse.status
+    //         } ${await saveResponse.text()}`
+    //       );
+    //     }
+
+    //     const saveData = await saveResponse.json();
+    //     console.log("✅ Render saved to DB:", saveData);
+    //   }
+    //   setExportUrl(data.url);
+    //   setShowModal(true);
+    // } catch (error) {
+    //   console.error("Export failed:", error);
+    //   alert(`Export failed: ${error || "Please try again."}`);
+    // } finally {
+    //   setIsExporting(false);
+    // }
   };
 
   const [messageIndex, setMessageIndex] = useState(0);
@@ -285,7 +307,7 @@ export const QuoteTemplateEditor: React.FC = () => {
   useEffect(() => {
     fetchUserUploads();
     fetchOnlineImages("history");
-  },[]);
+  }, []);
 
   return (
     <div style={{ display: "flex", height: "100%", flex: 1 }}>

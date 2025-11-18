@@ -1,31 +1,39 @@
-// utils/templateUtils.ts
-// import { templatedata } from "../data/templatedata";
-
-export const getTemplateRoute = (templateId: number, projectId: number) => {
-  switch (templateId) {
-    case 1: // Quote Spotlight
-      return `/project/${projectId}/quotetemplate`;
-    case 2: // Typing Animation
-      return `/project/${projectId}/texttypingtemplate`;
-    case 3: // Bar Graph
-      return `/project/${projectId}/bargraph`;
-    case 4: // KPI Flip Cards
-      return `/project/${projectId}/kpiflipcards`;
-    case 5: // Curve Line Trend
-      return `/project/${projectId}/curvelinetrend`;
-    case 6: // Split Screen
-      return `/project/${projectId}/splitscreen`;
-    case 7: // Fact Cards
-      return `/project/${projectId}/factcards`;
-    case 8: // Ken Burns Carousel
-      return `/project/${projectId}/kenburnscarousel`;
-    case 9: // Fake Text Conversation
-      return `/project/${projectId}/faketextconversation`;
-    case 10: // Reddit Narration
-      return `/project/${projectId}/redditvideo`;
-    case 11: // Story Narration
-      return `/project/${projectId}/storytelling`;
-    default:
-      return `/project/${projectId}/unknown`;
-  }
-};
+export const TemplateNavigator = (template: string) => {
+    const leading = "/template";
+    switch (template) {
+      case "Typing Animation":
+        return leading + "/newtexttyping";
+      case "Quote Spotlight":
+        return leading + "/quotetemplate";
+      case "Fact Cards":
+        return leading + "/factcards";
+      case "Bar Graph Analytics":
+        return leading + "/bargraph";
+      case "Split Screen":
+        return leading + "/splitscreen";
+      case "Kpi Flip Cards":
+        return leading + "/kpiflipcards";
+      case "Ken Burns Carousel":
+        return leading + "/kenburnscarousel";
+      case "Fake Text Conversation":
+        return leading + "/faketextconversation";
+      case "Reddit Post Narration":
+        return leading + "/redditvideo";
+      case "Ai Story Narration":
+        return leading + "/storytelling";
+      case "Curve Line Trend":
+        return leading + "/curvelinetrend";
+      case "Kinetic Typography":
+        return leading + "/kinetictext";
+      case "Neon Flicker":
+        return leading + "/neonflicker";
+      case "Heat Map":
+        return leading + "/heatmap";
+      case "Flip Cards":
+        return leading + "/flipcards";
+      case "Logo Animation":
+        return leading + "/logoanimation";
+      default:
+        return "/";
+    }
+  };
